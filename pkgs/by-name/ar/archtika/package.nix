@@ -18,8 +18,7 @@ let
   web = buildNpmPackage {
     name = "web-app";
     src = "${src}/web-app";
-    npmDeps = importNpmLock { npmRoot = "${src}/web-app"; };
-    npmConfigHook = importNpmLock.npmConfigHook;
+    npmDepsHash = "sha256-RTyo7K/Hr1hBGtcBKynrziUInl91JqZl84NkJg16ufA=";
     npmFlags = [ "--legacy-peer-deps" ];
     installPhase = ''
       mkdir -p $out/web-app
