@@ -5,9 +5,14 @@
   ...
 }:
 
-with lib;
-
 let
+  inherit (lib)
+    mkEnableOption
+    mkOption
+    mkIf
+    mkPackageOption
+    types
+    ;
   cfg = config.services.archtika;
   baseHardenedSystemdOptions = {
     CapabilityBoundingSet = "";
@@ -39,7 +44,7 @@ let
 in
 {
   options.services.archtika = {
-    enable = mkEnableOption "archtika service";
+    enable = mkEnableOption "Whether to enable the archtika service";
 
     package = mkPackageOption pkgs "archtika" { };
 
@@ -81,25 +86,21 @@ in
 
     domain = mkOption {
       type = types.str;
-      default = null;
       description = "Domain to use for the application.";
     };
 
     acmeEmail = mkOption {
       type = types.str;
-      default = null;
       description = "Email to notify for the SSL certificate renewal process.";
     };
 
     dnsProvider = mkOption {
       type = types.str;
-      default = null;
       description = "DNS provider for the DNS-01 challenge (required for wildcard domains).";
     };
 
     dnsEnvironmentFile = mkOption {
       type = types.path;
-      default = null;
       description = "API secrets for the DNS-01 challenge (required for wildcard domains).";
     };
 
@@ -119,7 +120,7 @@ in
           };
           maxWebsiteStorageSize = mkOption {
             type = types.int;
-            default = 500;
+            default = 50;
             description = "Maximum amount of disk space in MB allowed per user website by default.";
           };
         };
@@ -205,7 +206,7 @@ in
       enable = true;
       package = pkgs.postgresql_16;
       ensureDatabases = [ cfg.databaseName ];
-      authentication = lib.mkForce ''
+      authentication = lib.mkOverride 51 ''
         # IPv4 local connections:
         host    all    all    127.0.0.1/32    trust
         # IPv6 local connections:
@@ -213,15 +214,11 @@ in
         # Local socket connections:
         local   all    all                    trust
       '';
-      extraPlugins = with pkgs.postgresql16Packages; [ pgjwt ];
+      extraPlugins = [ pkgs.postgresql16Packages.pgjwt ];
     };
 
-    systemd.services.postgresql = {
-      path = with pkgs; [
-        # Tar and gzip are needed for tar.gz exports
-        gnutar
-        gzip
-      ];
+    systemd.services.postgresql.path = builtins.attrValues {
+      inherit (pkgs) gnutar gzip;
     };
 
     services.nginx = {
@@ -308,5 +305,5 @@ in
     };
   };
 
-  meta.maintainers = with maintainers; [ thiloho ];
+  meta.maintainers = [ lib.maintainers.thiloho ];
 }
