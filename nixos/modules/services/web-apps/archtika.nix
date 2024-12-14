@@ -104,6 +104,7 @@ in
     };
 
     settings = mkOption {
+      description = "Settings for the running archtika application.";
       type = types.submodule {
         options = {
           disableRegistration = mkOption {

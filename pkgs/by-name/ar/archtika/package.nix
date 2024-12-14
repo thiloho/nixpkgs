@@ -4,7 +4,7 @@
   buildNpmPackage,
   importNpmLock,
   symlinkJoin,
-  fetchFromGitHub
+  fetchFromGitHub,
 }:
 
 let
