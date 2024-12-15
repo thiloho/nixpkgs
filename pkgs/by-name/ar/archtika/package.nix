@@ -14,7 +14,7 @@ let
     owner = "archtika";
     repo = "archtika";
     rev = "v${version}";
-    hash = "sha256-+zZ2v2kYpJ12bJYURt4Ax5Mt3zgr+WQjnxLbAx0DKY0=";
+    hash = "sha256-IDSh1YeQiVRdfY3pUM1RDXpZDT/7vXDx4EYH8gEmmj4=";
   };
 
   web = buildNpmPackage {
