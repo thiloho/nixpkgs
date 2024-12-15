@@ -8,10 +8,12 @@
 }:
 
 let
+  version = "1.0.1";
+
   src = fetchFromGitHub {
     owner = "archtika";
     repo = "archtika";
-    rev = "v1.0.1";
+    rev = "v${version}";
     hash = "sha256-+zZ2v2kYpJ12bJYURt4Ax5Mt3zgr+WQjnxLbAx0DKY0=";
   };
 
@@ -40,18 +42,18 @@ let
 in
 symlinkJoin {
   pname = "archtika";
-  version = "1.0.1";
+  version = version;
 
   paths = [
     web
     api
   ];
 
-  meta = with lib; {
+  meta = {
     description = "A modern, performant and lightweight CMS";
     homepage = "https://archtika.com";
-    license = licenses.gpl3;
-    maintainers = with maintainers; [ thiloho ];
-    platforms = platforms.unix;
+    license = lib.licenses.gpl3;
+    maintainers = [ lib.maintainers.thiloho ];
+    platforms = lib.platforms.unix;
   };
 }
